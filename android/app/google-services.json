@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "18986691918",
+    "project_id": "edix-745b7",
+    "storage_bucket": "edix-745b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18986691918:android:e08c3db7b7f17a3fbd421f",
+        "android_client_info": {
+          "package_name": "com.example.e_learnning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYL178M2ZZIXYld1seLr1zdX70p662hSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
