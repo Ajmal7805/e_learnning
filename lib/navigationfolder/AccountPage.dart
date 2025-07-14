@@ -9,11 +9,9 @@ class ProfileScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: Icon(Icons.arrow_back, color: Colors.black),
         title: Text("My Profile", style: TextStyle(color: Colors.black)),
         centerTitle: true,
         elevation: 0,
-        actions: [Icon(Icons.settings, color: Colors.black)],
       ),
       body: Column(
         children: [

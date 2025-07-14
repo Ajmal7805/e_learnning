@@ -25,6 +25,7 @@ class _CourseScreenState extends State<CourseScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                
                 // Top Bar
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,6 +37,7 @@ class _CourseScreenState extends State<CourseScreen> {
                    
                   ],
                 ),
+                
                 const SizedBox(height: 20),
 
                 // Search Bar

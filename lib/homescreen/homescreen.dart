@@ -1,4 +1,5 @@
 import 'package:e_learnning/navigationfolder/AccountPage.dart';
+import 'package:e_learnning/navigationfolder/geminichat.dart';
 import 'package:e_learnning/navigationfolder/coursepage.dart';
 import 'package:e_learnning/navigationfolder/homepage.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages =  [
     HomePage(),
     CourseScreen(),
-    CourseScreen(),
+    Geminichat(),
     ProfileScreen()
   ];
 

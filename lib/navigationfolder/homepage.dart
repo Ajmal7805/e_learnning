@@ -1,3 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_learnning/homescreen/homescreen.dart';
+import 'package:e_learnning/navigationfolder/AccountPage.dart';
+import 'package:e_learnning/screens/CourseDetailsPage.dart';
+import 'package:e_learnning/screens/editprofilescreen.dart';
 import 'package:flutter/material.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -18,10 +23,15 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: const [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'),
+                      children:  [
+                        InkWell(onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return  ProfileScreen();
+                          },));
+                        },
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('images/profile.png'),
+                          ),
                         ),
                         SizedBox(width: 10),
                         Text(
@@ -33,7 +43,6 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         Spacer(),
-                        Icon(Icons.notifications, color: Colors.white),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -70,12 +79,7 @@ class HomePage extends StatelessWidget {
                             ],
                           ),
                           const Spacer(),
-                          Text(
-                            'My courses',
-                            style: TextStyle(
-                                color: Colors.blue.shade700,
-                                fontWeight: FontWeight.bold),
-                          ),
+                         
                         ],
                       ),
                     ),
@@ -97,21 +101,7 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 150,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  children: [
-                    learningCard('Get Started',
-                        'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'),
-                    const SizedBox(width: 10),
-                    learningCard('Continue',
-                        'https://cdn-icons-png.flaticon.com/512/4140/4140047.png'),
-                  ],
-                ),
-              ),
+            
 
               // Learning plan
               const SizedBox(height: 20),
@@ -148,6 +138,107 @@ class HomePage extends StatelessWidget {
 
               // Meetup section
               const SizedBox(height: 20),
+              Row(
+                children: [
+                  SizedBox(width: 10,),
+                  Text('Countinue with',style: TextStyle(),),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                      height: 160,
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('courses')
+                            .where('islocked', isEqualTo: false)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                
+                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                            return const Center(child: Text("No free courses available"));
+                          }
+                
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                var course = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                
+                String title = course['courseName'] ?? '';
+                String author = course['authorName'] ?? '';
+                String duration = course['totalDuration'] ?? '';
+                String description = course['courseDescription'] ?? '';
+                String courseId = course['courseId'] ?? '';
+                String thumbnailUrl = course['youtubeId'] != null
+                    ? 'https://img.youtube.com/vi/${course['youtubeId']}/hqdefault.jpg'
+                    : 'https://via.placeholder.com/150';
+                
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CourseDetailsPage(
+                          itsstarted: true,
+                          title: title,
+                          author: author,
+                          duration: duration,
+                          thumbnailUrl: thumbnailUrl,
+                          courseId: courseId,
+                          description: description,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            thumbnailUrl,
+                            height: 80,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          author,
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(
@@ -159,6 +250,7 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: [
+                      
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +284,7 @@ class HomePage extends StatelessWidget {
   // Learning Card Widget
   Widget learningCard(String title, String imgUrl) {
     return Container(
-      width: 140,
+      width: 150,
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
         borderRadius: BorderRadius.circular(15),
@@ -200,22 +292,13 @@ class HomePage extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: Column(
         children: [
-          Image.network(imgUrl, height: 50, width: 50),
-          const SizedBox(height: 10),
+          
           Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            onPressed: () {},
-            child: const Text('Get Started'),
-          ),
+         
+          
         ],
       ),
     );

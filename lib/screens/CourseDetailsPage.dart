@@ -36,7 +36,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
   @override
   void initState() {
     super.initState();
-    hasStarted = !widget.itsstarted; // If itsstarted is false, it means already started
+    hasStarted = !widget.itsstarted; // If false, already started
     fetchLessons();
     _confettiController = ConfettiController(duration: const Duration(seconds: 2));
   }
@@ -73,7 +73,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       await FirebaseFirestore.instance
           .collection('courses')
           .doc(widget.courseId)
-          .update({'itsstarted': false});
+          .update({'islocked': false});
 
       setState(() {
         hasStarted = true;
@@ -81,21 +81,14 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
 
       _confettiController.play();
 
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('🎉 Course Started!'),
-          content: Text('You have started the course: ${widget.title}'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK"),
-            )
-          ],
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('🎉 Course "${widget.title}" started!'),
+          backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
-      print("Error starting course: $e");
+      print("Error updating Firestore: $e");
     }
   }
 
@@ -252,7 +245,7 @@ class LessonTile extends StatelessWidget {
       onTap: () {
         if (!isCourseStarted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Please start the course first!')),
+            const SnackBar(content: Text('Please start the course first!')),
           );
           return;
         }

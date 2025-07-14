@@ -1,0 +1,1 @@
+const String geminiapikey='AIzaSyC8zFoOd86cZaGQSKzekfwDL2T8UbryPZQ';
